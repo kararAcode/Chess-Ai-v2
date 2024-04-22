@@ -1,39 +1,18 @@
-class Rook extends Piece {
-    
+/**
+ * Represents a Rook piece in a chess game. Rooks can move any number of squares
+ * vertically or horizontally until obstructed. This class extends SlidingPiece to
+ * utilize its mechanism for calculating possible sliding moves based on given direction vectors.
+ */
+class Rook extends SlidingPiece {
+    /**
+     * Constructs a Rook piece with specified initial position and color.
+     * @param {number} x The initial x-coordinate (column) on the chessboard where the rook is placed.
+     * @param {number} y The initial y-coordinate (row) on the chessboard where the rook is placed.
+     * @param {string} color The color of the rook ('w' for white, 'b' for black).
+     * @param {Chessboard} chessboard The chessboard instance to which this rook belongs.
+     */
     constructor(x, y, color, chessboard) {
-        super("rook", x, y, color, chessboard);
-        this.dirArr = [[1, 0], [0, 1], [-1, 0], [0, -1]]
-    }
-
-    getPossibleMoves() {
-        let moves = [];
-        for (const dir of this.dirArr) {
-
-            let n = 1
-            while (n < 8) {
-                let moveX = this.x + n * dir[0];
-                let moveY = this.y + n * dir[1];
-
-                
-
-                if (this.isOutside(moveX, moveY)) break;
-
-                if (this.chessboard.board[moveX][moveY] !== null) {
-                    if (this.isValidTarget(moveX, moveY)) {
-                        moves.push([moveX, moveY]);
-                    }
-                    break;
-
-                }
-
-                moves.push([moveX, moveY]);
-
-                n++;
-                
-
-            }
-        }
-
-        return moves;
+        // Direction arrays for the rook: right, up, left, down
+        super("rook", x, y, color, chessboard, [[1, 0], [0, 1], [-1, 0], [0, -1]]);
     }
 }
