@@ -12,5 +12,18 @@ class Piece {
         // image(this.img, this.cellWidth*j + width/2 - this.cellWidth*4, this.cellHeight * i,);
     }
 
+    isValidTarget(x, y) {
+        if (board[x][y] == null) {
+            return false;
+        }
+
+        let oppositeColor = this.color === "w" ? "b" : "w"
+
+        return this.chessboard.board[x][y].color === oppositeColor;
+    }
+
+    isOutside(x, y) {
+        return !(x >= 0 && x < 8 &&  y >= 0 && y < 8) 
+    }
 
 } 

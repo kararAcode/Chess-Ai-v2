@@ -21,11 +21,11 @@ class Pawn extends Piece {
             moves.push([forwardTwo, this.y])
         }   
 
-        if (this.chessboard.board[forwardOne][this.y-1] != null && !this.isOutside(forwardOne, this.y-1)) {
+        if (this.isValidTarget(forwardOne, this.y-1) && !this.isOutside(forwardOne, this.y-1)) {
             moves.push([forwardOne, this.y-1])
         }   
 
-        if (this.chessboard.board[forwardOne][this.y+1] != null && !this.isOutside(forwardOne, this.y+1)) {
+        if (this.isValidTarget(forwardOne, this.y+1) && !this.isOutside(forwardOne, this.y+1)) {
             moves.push([forwardOne, this.y+1])
         }   
 
@@ -34,9 +34,7 @@ class Pawn extends Piece {
         return moves;
     }
 
-    isOutside(x, y) {
-        return !(x >= 0 && x < 8 &&  y >= 0 && y < 8) 
-    }
+    
       
 
 } 
