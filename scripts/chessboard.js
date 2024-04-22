@@ -1,6 +1,6 @@
 class Chessboard {
     constructor() {
-        this.board = [];
+        this.board = Array(8).fill(null).map(() => Array(8).fill(null));
         
         this.cellWidth = width/8;
         this.cellHeight = height/8;
@@ -26,17 +26,7 @@ class Chessboard {
         }
     }
 
-    displayPieces() {
-        
-    }
-
-
-
     
-
-
-
-
 
 
 
