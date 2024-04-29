@@ -14,7 +14,13 @@ class Chessboard {
      */
     constructor(width, height) {
         this.board = Array(8).fill(null).map(() => Array(8).fill(null));
-        this.setupPieces();
+
+        this.board[0][0] = new Rook(0, 0, "b", this);
+        this.board[7][0] = new King(7, 0, "w", this);
+
+        console.log(this.isOpponentKingInDanger("b"));
+
+        // this.setupPieces();
         
         this.cellWidth = width / 8;
         this.cellHeight = height / 8;
@@ -41,6 +47,63 @@ class Chessboard {
             this.board[6][i] = new Pawn(6, i, "w", this);
             this.board[7][i] = new mainForces[i](7, i, "w", this);
         }
+    }
+
+    /**
+     * Retrieves all pieces of a specified type and optionally a specified color from the board.
+     * 
+     * @param {string} [color] The color of the pieces to filter for ('w' for white, 'b' for black).
+     * @returns {Array} An array containing all pieces of the specified type and color.
+     */
+    getPieces(color) {
+        return this.board.flatMap(row => row.filter(piece => piece && piece.color === color));
+    }
+    
+
+    /**
+     * Finds the king of a given color.
+     * 
+     * @param {string} color Color of the king to find ('w' or 'b').
+     * @returns {Piece} The king piece of the specified color.
+     */
+    findKing(color) {
+        for (let row of this.board) {
+            for (let piece of row) {
+                if (piece instanceof King && piece.color === color) {
+                    return piece; // Return the first found king of the specified color
+                }
+            }
+        }
+        return null; // Return null if no king is found
+    }
+
+    /**
+     * Checks if the opponent's king is in danger of being captured on the next move,
+     * effectively determining if the king is in check. This method evaluates all possible
+     * moves for all pieces of the given color to see if any can capture the opposing king.
+     *
+     * @param {string} color The color of the pieces to check the moves for. This should
+     *        be 'w' for white or 'b' for black. The function will check if these pieces
+     *        can put the opposite color's king in check.
+     * @returns {boolean} True if the opponent's king is in check, otherwise false.
+     */
+    isOpponentKingInDanger(color) {
+        let opponentColor = color === "w" ? "b" : "w"
+        let opponentKing = this.findKing(opponentColor);
+
+        let pieces = this.getPieces(color);
+
+        for (const piece of pieces) {
+            let piecesMoves = piece.getPossibleMoves();
+
+            for (const move of piecesMoves) {
+                if (opponentKing.x === move.x && opponentKing.y === move.y) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

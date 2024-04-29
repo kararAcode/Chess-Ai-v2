@@ -9,7 +9,7 @@ let chessboard;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  chessboard = new Chessboard()
+  chessboard = new Chessboard(width, height)
 
 }
 
