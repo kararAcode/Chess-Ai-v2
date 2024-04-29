@@ -24,7 +24,7 @@ class SlidingPiece extends Piece {
      * It checks each direction and continues moving in that direction until obstructed by another piece
      * or the edge of the chessboard.
      * 
-     * @returns {Array<Array<number>>} An array of coordinate pairs [x, y] representing possible moves.
+     * @returns {Array<Object>} An array of objects each with properties 'x' and 'y' representing possible moves.
      */
     getPossibleMoves() {
         let moves = [];
@@ -38,12 +38,12 @@ class SlidingPiece extends Piece {
 
                 if (this.chessboard.board[moveX][moveY] !== null) { // If there is a piece at the calculated position
                     if (this.isValidTarget(moveX, moveY)) { // Check if the piece can be captured (i.e., is of the opposite color)
-                        moves.push([moveX, moveY]); // If so, add this move as a valid move.
+                        moves.push({ x: moveX, y: moveY }) // If so, add this move as a valid move.
                     }
                     break; // Stop checking further in this direction after encountering any piece.
                 }
 
-                moves.push([moveX, moveY]); // If the position is empty, add it as a valid move.
+                moves.push({ x: moveX, y: moveY }) // If the position is empty, add it as a valid move.
                 n++; // Increment to check the next position in this direction.
             }
         }

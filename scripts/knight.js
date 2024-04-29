@@ -22,7 +22,7 @@ class Knight extends Piece {
      * movement abilities. The knight can move to any of the 8 possible L-shaped positions around its
      * current position, provided the move does not place the knight outside the chessboard.
      * 
-     * @returns {Array<Array<number>>} An array of coordinate pairs [x, y] representing possible moves.
+     * @returns {Array<Object>} An array of objects each with properties 'x' and 'y' representing possible moves.
      */
     getPossibleMoves() {
         let dirArr = [
@@ -47,7 +47,7 @@ class Knight extends Piece {
             }
             
             if (this.chessboard.board[moveX][moveY] === null || this.isValidTarget(moveX, moveY)) {
-                moves.push([moveX, moveY]); // Add move if the square is empty or contains an opponent's piece
+                moves.push({ x: moveX, y: moveY }) // Add move if the square is empty or contains an opponent's piece
             }
         }
 

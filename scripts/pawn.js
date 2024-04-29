@@ -29,26 +29,25 @@ class Pawn extends Piece {
 
         // Move one square forward if it's not occupied and within board limits
         if (this.chessboard.board[forwardOne][this.y] == null && !this.isOutside(forwardOne, this.y)) {
-            moves.push([forwardOne, this.y]);
+            moves.push({x: forwardOne, y: this.y});
         }
 
         // Move two squares forward on the first turn if it's not occupied and within board limits
         if (this.chessboard.board[forwardTwo][this.y] == null && this.firstTurn && !this.isOutside(forwardTwo, this.y)) {
-            moves.push([forwardTwo, this.y]);
+            moves.push({x: forwardTwo, y: this.y});
         }
 
         // Capture diagonally left if there is an opponent piece and it's within board limits
         if (this.isValidTarget(forwardOne, this.y - 1) && !this.isOutside(forwardOne, this.y - 1)) {
-            moves.push([forwardOne, this.y - 1]);
+            moves.push({x: forwardOne, y: this.y - 1});
         }
 
         // Capture diagonally right if there is an opponent piece and it's within board limits
         if (this.isValidTarget(forwardOne, this.y + 1) && !this.isOutside(forwardOne, this.y + 1)) {
-            moves.push([forwardOne, this.y + 1]);
+            moves.push({x: forwardOne, y: this.y + 1});
         }
-
-        this.firstTurn = false; // After moving, it is no longer the pawn's first turn
 
         return moves;
     }
+
 }

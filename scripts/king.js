@@ -48,7 +48,7 @@ class King extends Piece {
 
             // Add move if the square is empty or contains an opponent's piece
             if (this.chessboard.board[moveX][moveY] === null || this.isValidTarget(moveX, moveY)) {
-                moves.push([moveX, moveY]);
+                moves.push({ x: moveX, y: moveY });
             }
         }
 
