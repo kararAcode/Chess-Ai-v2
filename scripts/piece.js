@@ -48,6 +48,10 @@ class Piece {
         return !(x >= 0 && x < 8 && y >= 0 && y < 8);
     }
 
+    clone(){
+        return new this.constructor(this.x, this.y, this.color, this.chessboard);
+    }
+
 
 }
 
