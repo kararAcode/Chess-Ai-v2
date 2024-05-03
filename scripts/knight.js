@@ -1,3 +1,4 @@
+import Piece from "./piece.js";
 /**
  * Represents a Knight piece in a chess game. Knights have a unique non-linear movement pattern 
  * that allows them to "jump" over other pieces. They move in an L-shape pattern: two squares 
@@ -54,3 +55,5 @@ class Knight extends Piece {
         return moves; // Return the list of valid moves
     }
 }
+
+export default Knight;

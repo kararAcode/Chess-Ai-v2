@@ -1,3 +1,5 @@
+import SlidingPiece from "./slidingPiece.js";
+
 /**
  * Represents a Queen piece in a chess game. The queen combines the power of the rook and bishop
  * and can move any number of squares along a rank, file, or diagonal, until she is obstructed.
@@ -17,3 +19,5 @@ class Queen extends SlidingPiece {
         super("queen", x, y, color, chessboard, [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]);
     }
 }
+
+export default Queen;

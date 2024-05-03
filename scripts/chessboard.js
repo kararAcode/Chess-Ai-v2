@@ -1,3 +1,9 @@
+import Pawn from "./pawn.js";
+import Rook from "./rook.js";
+import Knight from "./knight.js";
+import Bishop from "./bishop.js";
+import Queen from "./queen.js";
+import King from "./king.js";
 /**
  * Represents a chessboard in a chess game, managing the state of the game,
  * including piece positions, and providing methods for setting up the board,
@@ -15,23 +21,6 @@ class Chessboard {
     constructor(width, height) {
         this.board = Array(8).fill(null).map(() => Array(8).fill(null));
         // this.setupPieces()
-
-        this.board[7][4] = new King(7, 4, 'b', this);
-
-        // White Queen placed at e7 to checkmate the Black King
-        this.board[6][4] = new Queen(6, 4, 'w', this);
-
-        // Optional: White King at e1 for completeness of game setup
-        this.board[0][4] = new King(0, 4, 'w', this);
-
-        // Other supporting pieces that could be blocking escape squares or contributing to the checkmate could be added here
-        // Example: Adding a White Rook at h8, assuming row 7, column 7 for simplicity
-        this.board[7][7] = new Rook(7, 7, 'w', this);
-
-
-        // console.log(this.board);
-
-        console.log(this.detectCheckmate("w"))
 
         this.cellWidth = width / 8;
         this.cellHeight = height / 8;
@@ -188,12 +177,14 @@ class Chessboard {
      * Renders the chessboard on the canvas, drawing each cell and alternately coloring them.
      * Adjusts cell positions based on the board's dimensions to ensure the board is centered.
      */
-    display() {
+    display(p) {
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
-                fill((i + j) % 2 === 0 ? "rgb(238, 238, 210)" : "rgb(118, 150, 86)");
-                rect(this.cellWidth * j + width / 2 - this.cellWidth * 4, this.cellHeight * i, this.cellWidth, this.cellHeight);
+                p.fill((i + j) % 2 === 0 ? "rgb(238, 238, 210)" : "rgb(118, 150, 86)");
+                p.rect(this.cellWidth * j + p.width / 2 - this.cellWidth * 4, this.cellHeight * i, this.cellWidth, this.cellHeight);
             }
         }
     }
 }
+
+export default Chessboard;

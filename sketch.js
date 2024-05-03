@@ -5,16 +5,30 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let chessboard;
+import Chessboard from "./scripts/chessboard.js"; 
 
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-  chessboard = new Chessboard(width, height)
 
+
+
+
+const mainSketch = (p) => {
+  let chessboard;
+
+  p.setup = () =>{
+    p.createCanvas(p.windowWidth, p.windowHeight);
+    chessboard = new Chessboard(p.width, p.height);
+    chessboard.setupPieces();
+    console.log(chessboard.getPieces("w"));
+    
+  
+  
+  }
+  
+  p.draw = () =>{
+    p.background(255);
+    chessboard.display(p)
+  }
+  
 }
 
-function draw() {
-  background(255);
-  chessboard.display()
-}
-
+new p5(mainSketch);

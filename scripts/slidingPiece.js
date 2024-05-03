@@ -1,3 +1,4 @@
+import Piece from "./piece.js";
 /**
  * SlidingPiece is an abstract class for chess pieces that move in straight lines
  * until they are obstructed (e.g., Rook, Bishop, Queen). It extends the Piece class,
@@ -50,3 +51,5 @@ class SlidingPiece extends Piece {
         return moves; // Return all calculated moves.
     }
 }
+
+export default SlidingPiece;

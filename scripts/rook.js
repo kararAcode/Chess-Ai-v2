@@ -1,3 +1,5 @@
+import SlidingPiece from "./slidingPiece.js";
+
 /**
  * Represents a Rook piece in a chess game. Rooks can move any number of squares
  * vertically or horizontally until obstructed. This class extends SlidingPiece to
@@ -16,3 +18,5 @@ class Rook extends SlidingPiece {
         super("rook", x, y, color, chessboard, [[1, 0], [0, 1], [-1, 0], [0, -1]]);
     }
 }
+
+export default Rook;

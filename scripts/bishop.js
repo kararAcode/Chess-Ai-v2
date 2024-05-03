@@ -1,3 +1,4 @@
+import SlidingPiece from "./slidingPiece.js";
 /**
  * Represents a Bishop piece in a chess game. Bishops move diagonally on the board
  * and can continue to move in one of four possible diagonal directions until they are obstructed.
@@ -17,3 +18,5 @@ class Bishop extends SlidingPiece {
         super("bishop", x, y, color, chessboard, [[1, 1], [1, -1], [-1, 1], [-1, -1]]);
     }
 }
+
+export default Bishop;

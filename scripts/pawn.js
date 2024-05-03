@@ -1,3 +1,4 @@
+import Piece from "./piece.js";
 /**
  * Represents a pawn piece in a chess game. Pawns have unique movement rules:
  * they move forward one square, but can move two squares from their initial position.
@@ -51,3 +52,5 @@ class Pawn extends Piece {
     }
 
 }
+
+export default Pawn;

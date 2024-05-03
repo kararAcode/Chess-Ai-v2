@@ -1,3 +1,4 @@
+import Piece from "./piece.js";
 /**
  * Represents a King piece in a chess game. The king can move one square in any direction:
  * horizontally, vertically, or diagonally. This class extends the Piece class, utilizing its basic setup
@@ -55,3 +56,5 @@ class King extends Piece {
         return moves; // Return the list of valid moves
     }
 }
+
+export default King;
