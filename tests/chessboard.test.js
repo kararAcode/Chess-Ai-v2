@@ -82,7 +82,7 @@ describe('move', () => {
 });
 
 
-describe('isOpponentKingInDanger', () => {
+describe('isKingInCheck', () => {
     let chessboard;
 
     beforeEach(() => {
@@ -95,20 +95,20 @@ describe('isOpponentKingInDanger', () => {
         test('king in check from a rook horizontally', () => {
             chessboard.board[0][0] = new King(0, 0, 'b', chessboard.board);
             chessboard.board[0][7] = new Rook(0, 7, 'w', chessboard.board);
-            expect(chessboard.isOpponentKingInDanger('w')).toBeTruthy();
+            expect(chessboard.isKingInCheck('b')).toBeTruthy();
         });
 
         test('king in check from a rook vertically', () => {
             chessboard.board[0][0] = new King(0, 0, 'b', chessboard.board);
             chessboard.board[7][0] = new Rook(7, 0, 'w', chessboard.board);
-            expect(chessboard.isOpponentKingInDanger('w')).toBeTruthy();
+            expect(chessboard.isKingInCheck('b')).toBeTruthy();
         });
 
         test('rook check blocked by another piece', () => {
             chessboard.board[0][0] = new King(0, 0, 'b', chessboard.board);
             chessboard.board[0][5] = new Rook(0, 5, 'w', chessboard.board);
             chessboard.board[0][3] = new Pawn(0, 3, 'b', chessboard.board);
-            expect(chessboard.isOpponentKingInDanger('w')).toBeFalsy();
+            expect(chessboard.isKingInCheck('b')).toBeFalsy();
         });
     });
 
@@ -117,14 +117,14 @@ describe('isOpponentKingInDanger', () => {
         test('bishop places king in check diagonally', () => {
             chessboard.board[0][0] = new King(0, 0, 'b', chessboard.board);
             chessboard.board[7][7] = new Bishop(7, 7, 'w', chessboard.board);
-            expect(chessboard.isOpponentKingInDanger('w')).toBeTruthy();
+            expect(chessboard.isKingInCheck('b')).toBeTruthy();
         });
 
         test('bishop check blocked by pawn', () => {
             chessboard.board[0][0] = new King(0, 0, 'b', chessboard.board);
             chessboard.board[3][3] = new Bishop(3, 3, 'w', chessboard.board);
             chessboard.board[2][2] = new Pawn(2, 2, 'b', chessboard.board);
-            expect(chessboard.isOpponentKingInDanger('w')).toBeFalsy();
+            expect(chessboard.isKingInCheck('b')).toBeFalsy();
         });
     });
 
@@ -133,14 +133,14 @@ describe('isOpponentKingInDanger', () => {
         test('queen threatens king across the board', () => {
             chessboard.board[0][0] = new King(0, 0, 'b', chessboard.board);
             chessboard.board[0][7] = new Queen(0, 7, 'w', chessboard.board);
-            expect(chessboard.isOpponentKingInDanger('w')).toBeTruthy();
+            expect(chessboard.isKingInCheck('b')).toBeTruthy();
         });
 
         test('queen threat blocked by pawn', () => {
             chessboard.board[0][0] = new King(0, 0, 'b', chessboard.board);
             chessboard.board[0][4] = new Queen(0, 4, 'w', chessboard.board);
             chessboard.board[0][2] = new Pawn(0, 2, 'b', chessboard.board);
-            expect(chessboard.isOpponentKingInDanger('w')).toBeFalsy();
+            expect(chessboard.isKingInCheck('b')).toBeFalsy();
         });
     });
 
@@ -149,13 +149,13 @@ describe('isOpponentKingInDanger', () => {
         test('knight threatens king', () => {
             chessboard.board[2][1] = new King(2, 1, 'b', chessboard.board);
             chessboard.board[0][2] = new Knight(0, 2, 'w', chessboard.board);
-            expect(chessboard.isOpponentKingInDanger('w')).toBeTruthy();
+            expect(chessboard.isKingInCheck('b')).toBeTruthy();
         });
 
         test('knight not threatening adjacent king', () => {
             chessboard.board[2][2] = new King(2, 2, 'b', chessboard.board);
             chessboard.board[2][3] = new Knight(2, 3, 'w', chessboard.board);
-            expect(chessboard.isOpponentKingInDanger('w')).toBeFalsy();
+            expect(chessboard.isKingInCheck('b')).toBeFalsy();
         });
     });
 
@@ -164,13 +164,13 @@ describe('isOpponentKingInDanger', () => {
         test('pawn threatens king diagonally', () => {
             chessboard.board[1][1] = new King(1, 1, 'b', chessboard.board);
             chessboard.board[2][2] = new Pawn(2, 2, 'w', chessboard.board);
-            expect(chessboard.isOpponentKingInDanger('w')).toBeTruthy();
+            expect(chessboard.isKingInCheck('b')).toBeTruthy();
         });
     });
 });
 
 
-describe('detectCheckmate', () => {
+describe('isOpponentCheckmated', () => {
     let chessboard;
     beforeEach(() => {
         chessboard = new Chessboard(800, 800);
@@ -187,7 +187,7 @@ describe('detectCheckmate', () => {
         // You can add more pieces if needed to block any other potential escape routes
         // Ensure no other black piece can block the check or capture the threatening queen
     
-        expect(chessboard.detectCheckmate('w')).toBeTruthy(); // Expecting true, as white should have checkmated black
+        expect(chessboard.isOpponentCheckmated('w')).toBeTruthy(); // Expecting true, as white should have checkmated black
     });
     
     
@@ -195,7 +195,7 @@ describe('detectCheckmate', () => {
     
     test('returns false when it is not checkmate', () => {
         chessboard.setupPieces(); // Standard setup is not a checkmate
-        expect(chessboard.detectCheckmate('b')).toBeFalsy();
-        expect(chessboard.detectCheckmate('w')).toBeFalsy();
+        expect(chessboard.isOpponentCheckmated('b')).toBeFalsy();
+        expect(chessboard.isOpponentCheckmated('w')).toBeFalsy();
     });
 });

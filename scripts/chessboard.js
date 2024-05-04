@@ -83,12 +83,13 @@ class Chessboard {
     }
 
     /**
-     * Attempts to detect checkmate for a specified color by simulating all possible moves for that color.
-     * 
-     * @param {string} color The color to check for potential checkmate.
-     * @returns {boolean} True if checkmate is detected, otherwise false.
+     * Checks if the opponent is in checkmate, meaning the opponent's king is in check and no legal moves can remove the king from check.
+     *
+     * @param {string} color The color of the player making the move, used to determine the opponent.
+     * @returns {boolean} True if the opponent is checkmated, otherwise false.
      */
-    detectCheckmate(color) {
+    isOpponentCheckmated(color) {
+
         let simulatedBoard = this.cloneBoard();
         let opponentColor = color === "w" ? "b" : "w";
     
@@ -101,11 +102,10 @@ class Chessboard {
                 let capturedPiece = simulatedBoard[pieceMove.x][pieceMove.y];
 
                 this.move(piece, pieceMove, simulatedBoard);
-                console.log(simulatedBoard);
 
     
                
-                if (!this.isOpponentKingInDanger(color, simulatedBoard)) {
+                if (!this.isKingInCheck(opponentColor, simulatedBoard)) {
                     return false;
                 }
     
@@ -117,7 +117,6 @@ class Chessboard {
             }
         }
     
-        console.log("No moves alleviate check. This is a checkmate.");
         return true;
     }
     
@@ -140,29 +139,40 @@ class Chessboard {
     }
 
     /**
-     * Checks if the opponent's king is in danger of being captured on the next move,
-     * effectively determining if the king is in check. This method evaluates all possible
-     * moves for all pieces of the given color to see if any can capture the opposing king.
+     * Checks if the king of the specified color is in check.
+     * This method evaluates all possible moves for all pieces of the opponent's color
+     * to see if any can capture the king of the specified color.
      *
-     * @param {string} color The color of the pieces to check the moves for.
-     * @param {Array} board Optional parameter for the board to check; defaults to the main board.
-     * @returns {boolean} True if the opponent's king is in check, otherwise false.
+     * @param {string} color The color of the king to check for check.
+     * @param {Array<Array<Piece|null>>} board Optional parameter for the board to check; defaults to the main board.
+     * @returns {boolean} True if the king of the specified color is in check, otherwise false.
      */
-    isOpponentKingInDanger(color, board = this.board) {
-        let opponentColor = color === "w" ? "b" : "w";
-        let opponentKing = this.findKing(opponentColor, board);
-        let pieces = this.getPieces(color, board);
-        for (const piece of pieces) {
-            let piecesMoves = piece.getPossibleMoves();
-            for (const move of piecesMoves) {
+    isKingInCheck(color, board = this.board) {
+        let opponentColor = color === "w" ? "b" : "w"; // Determine the opponent's color based on the given color
+        let king = this.findKing(color, board); // Find the king of the specified color on the board
+        let opponentPieces = this.getPieces(opponentColor, board); // Get all pieces of the opponent's color
 
-                if (opponentKing && move.x === opponentKing.x && move.y === opponentKing.y) {
-                    return true;
+        for (const piece of opponentPieces) {
+            let possibleMoves = piece.getPossibleMoves(); // Get all possible moves for each opponent piece
+            for (const move of possibleMoves) {
+                if (king && move.x === king.x && move.y === king.y) {
+                    return true; // The king is in check if any move can capture the king
                 }
             }
         }
-        return false;
+        return false; // Return false if no moves put the king in check
     }
+
+
+    isValidMove(piece, move) {
+        let simulatedBoard = this.cloneBoard();
+        this.move(piece, move, simulatedBoard);
+        return !this.isKingInCheck(piece.color, simulatedBoard);
+       
+    }
+
+    
+
 
     /**
      * Moves a piece on the board from its current position to a new position.
