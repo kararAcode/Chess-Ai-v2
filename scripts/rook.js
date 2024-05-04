@@ -13,9 +13,9 @@ class Rook extends SlidingPiece {
      * @param {string} color The color of the rook ('w' for white, 'b' for black).
      * @param {Chessboard} chessboard The chessboard instance to which this rook belongs.
      */
-    constructor(x, y, color, chessboard) {
+    constructor(x, y, color, board) {
         // Direction arrays for the rook: right, up, left, down
-        super("rook", x, y, color, chessboard, [[1, 0], [0, 1], [-1, 0], [0, -1]]);
+        super("rook", x, y, color, board, [[1, 0], [0, 1], [-1, 0], [0, -1]]);
     }
 }
 

@@ -22,6 +22,7 @@ class Chessboard {
         this.board = Array(8).fill(null).map(() => Array(8).fill(null));
         // this.setupPieces()
 
+       
         this.cellWidth = width / 8;
         this.cellHeight = height / 8;
 
@@ -41,10 +42,10 @@ class Chessboard {
     setupPieces() {
         const mainForces = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook];
         for (let i = 0; i < mainForces.length; i++) {
-            this.board[0][i] = new mainForces[i](0, i, "b", this);
-            this.board[1][i] = new Pawn(1, i, "b", this);
-            this.board[6][i] = new Pawn(6, i, "w", this);
-            this.board[7][i] = new mainForces[i](7, i, "w", this);
+            this.board[0][i] = new mainForces[i](0, i, "b", this.board);
+            this.board[1][i] = new Pawn(1, i, "b", this.board);
+            this.board[6][i] = new Pawn(6, i, "w", this.board);
+            this.board[7][i] = new mainForces[i](7, i, "w", this.board);
         }
     }
 
@@ -71,7 +72,7 @@ class Chessboard {
             for (let j = 0; j < 8; j++) {
 
                 if (this.board[i][j] !== null) {
-                    let clonedPiece = this.board[i][j].clone();
+                    let clonedPiece = this.board[i][j].clone(newBoard);
                     newBoard[i][j] = clonedPiece;
 
                 }
@@ -89,20 +90,25 @@ class Chessboard {
      */
     detectCheckmate(color) {
         let simulatedBoard = this.cloneBoard();
-        let pieces = this.getPieces(color, simulatedBoard);
-        console.log(simulatedBoard);
-        for (const piece of pieces) {
+        let opponentColor = color === "w" ? "b" : "w";
+    
+        let pieces = this.getPieces(opponentColor, simulatedBoard);
+        for (let piece of pieces) {
             let piecesMoves = piece.getPossibleMoves();
             let oldX = piece.x;
             let oldY = piece.y;
             for (const pieceMove of piecesMoves) {
                 let capturedPiece = simulatedBoard[pieceMove.x][pieceMove.y];
-                this.move(piece, pieceMove, simulatedBoard);
-                
 
+                this.move(piece, pieceMove, simulatedBoard);
+                console.log(simulatedBoard);
+
+    
+               
                 if (!this.isOpponentKingInDanger(color, simulatedBoard)) {
                     return false;
                 }
+    
                 // Reset the move
                 simulatedBoard[pieceMove.x][pieceMove.y] = capturedPiece;
                 simulatedBoard[oldX][oldY] = piece;
@@ -110,9 +116,11 @@ class Chessboard {
                 piece.y = oldY;
             }
         }
+    
+        console.log("No moves alleviate check. This is a checkmate.");
         return true;
     }
-
+    
     /**
      * Finds the king of a given color on a specified board or the main board.
      * 
@@ -147,6 +155,7 @@ class Chessboard {
         for (const piece of pieces) {
             let piecesMoves = piece.getPossibleMoves();
             for (const move of piecesMoves) {
+
                 if (opponentKing && move.x === opponentKing.x && move.y === opponentKing.y) {
                     return true;
                 }
@@ -167,10 +176,13 @@ class Chessboard {
         if (piece instanceof Pawn) {
             piece.firstTurn = false;
         }
+
+         
         board[piece.x][piece.y] = null;
         board[move.x][move.y] = piece;
         piece.x = move.x;
         piece.y = move.y;
+
     }
 
     /**

@@ -14,9 +14,9 @@ class Queen extends SlidingPiece {
      * @param {string} color The color of the queen ('w' for white, 'b' for black).
      * @param {Chessboard} chessboard The chessboard instance to which this queen belongs.
      */
-    constructor(x, y, color, chessboard) {
+    constructor(x, y, color, board) {
         // Direction arrays for the queen: includes horizontal, vertical, and diagonal directions
-        super("queen", x, y, color, chessboard, [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]);
+        super("queen", x, y, color, board, [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]);
     }
 }
 

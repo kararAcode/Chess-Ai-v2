@@ -15,8 +15,8 @@ class SlidingPiece extends Piece {
      * @param {Array<Array<number>>} dirArr An array of direction vectors indicating 
      * the possible directions in which the piece can move (e.g., [[1, 0], [0, 1]] for a Rook).
      */
-    constructor(name, x, y, color, chessboard, dirArr) {
-        super(name, x, y, color, chessboard);
+    constructor(name, x, y, color, board, dirArr) {
+        super(name, x, y, color, board);
         this.dirArr = dirArr;  // Direction vectors are stored to determine movement possibilities.
     }
 
@@ -37,7 +37,7 @@ class SlidingPiece extends Piece {
 
                 if (this.isOutside(moveX, moveY)) break; // If the move is outside the chessboard, stop moving in this direction.
 
-                if (this.chessboard.board[moveX][moveY] !== null) { // If there is a piece at the calculated position
+                if (this.board[moveX][moveY] !== null) { // If there is a piece at the calculated position
                     if (this.isValidTarget(moveX, moveY)) { // Check if the piece can be captured (i.e., is of the opposite color)
                         moves.push({ x: moveX, y: moveY }) // If so, add this move as a valid move.
                     }

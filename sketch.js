@@ -8,9 +8,6 @@
 import Chessboard from "./scripts/chessboard.js"; 
 
 
-
-
-
 const mainSketch = (p) => {
   let chessboard;
 
@@ -18,7 +15,6 @@ const mainSketch = (p) => {
     p.createCanvas(p.windowWidth, p.windowHeight);
     chessboard = new Chessboard(p.width, p.height);
     chessboard.setupPieces();
-    console.log(chessboard.getPieces("w"));
     
   
   

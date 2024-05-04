@@ -13,9 +13,9 @@ class Bishop extends SlidingPiece {
      * @param {string} color The color of the bishop ('w' for white, 'b' for black).
      * @param {Chessboard} chessboard The chessboard instance to which this bishop belongs.
      */
-    constructor(x, y, color, chessboard) {
+    constructor(x, y, color, board) {
         // Direction arrays for the bishop: all four possible diagonal directions
-        super("bishop", x, y, color, chessboard, [[1, 1], [1, -1], [-1, 1], [-1, -1]]);
+        super("bishop", x, y, color, board, [[1, 1], [1, -1], [-1, 1], [-1, -1]]);
     }
 }
 

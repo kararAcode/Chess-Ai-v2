@@ -12,8 +12,8 @@ class King extends Piece {
      * @param {string} color The color of the king ('w' for white, 'b' for black).
      * @param {Chessboard} chessboard The chessboard instance to which this king belongs.
      */
-    constructor(x, y, color, chessboard) {
-        super("king", x, y, color, chessboard); // Call to the parent class constructor
+    constructor(x, y, color, board) {
+        super("king", x, y, color, board); // Call to the parent class constructor
     }
 
     /**
@@ -48,7 +48,7 @@ class King extends Piece {
             }
 
             // Add move if the square is empty or contains an opponent's piece
-            if (this.chessboard.board[moveX][moveY] === null || this.isValidTarget(moveX, moveY)) {
+            if (this.board[moveX][moveY] === null || this.isValidTarget(moveX, moveY)) {
                 moves.push({ x: moveX, y: moveY });
             }
         }
