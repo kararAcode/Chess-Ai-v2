@@ -12,7 +12,7 @@ class Queen extends SlidingPiece {
      * @param {number} x The initial x-coordinate (column) on the chessboard where the queen is placed.
      * @param {number} y The initial y-coordinate (row) on the chessboard where the queen is placed.
      * @param {string} color The color of the queen ('w' for white, 'b' for black).
-     * @param {Chessboard} chessboard The chessboard instance to which this queen belongs.
+     * @param {Array<Array<Piece|null>>} board The 2D array representing the game board, where each cell may contain a Piece or null.
      */
     constructor(x, y, color, board) {
         // Direction arrays for the queen: includes horizontal, vertical, and diagonal directions

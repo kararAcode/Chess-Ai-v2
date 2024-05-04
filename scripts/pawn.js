@@ -10,7 +10,7 @@ class Pawn extends Piece {
      * @param {number} x The x-coordinate (column) of the pawn on the chessboard.
      * @param {number} y The y-coordinate (row) of the pawn on the chessboard.
      * @param {string} color The color of the pawn ('w' for white, 'b' for black).
-     * @param {Chessboard} chessboard The chessboard on which the pawn is placed.
+     * @param {Array<Array<Piece|null>>} board The 2D array representing the game board, where each cell may contain a Piece or null.
      */
     constructor(x, y, color, board) {
         super("pawn", x, y, color, board); // Call to the parent class constructor

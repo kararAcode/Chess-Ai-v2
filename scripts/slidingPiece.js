@@ -11,7 +11,7 @@ class SlidingPiece extends Piece {
      * @param {number} x The initial x-coordinate (column) on the chessboard.
      * @param {number} y The initial y-coordinate (row) on the chessboard.
      * @param {string} color The color of the piece ('w' for white, 'b' for black).
-     * @param {Chessboard} chessboard The chessboard instance this piece belongs to.
+     * @param {Array<Array<Piece|null>>} board The 2D array representing the game board, where each cell may contain a Piece or null.
      * @param {Array<Array<number>>} dirArr An array of direction vectors indicating 
      * the possible directions in which the piece can move (e.g., [[1, 0], [0, 1]] for a Rook).
      */

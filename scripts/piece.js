@@ -5,7 +5,7 @@ class Piece {
      * @param {number} x Initial x-coordinate on the chessboard.
      * @param {number} y Initial y-coordinate on the chessboard.
      * @param {string} color Color of the piece ('w' for white, 'b' for black).
-     * @param {Chessboard} chessboard Reference to the chessboard holding this piece.
+     * @param {Array<Array<Piece|null>>} board The 2D array representing the game board, where each cell may contain a Piece or null.
      */
     constructor(name, x, y, color, board) {
         this.name = name;
@@ -48,6 +48,11 @@ class Piece {
         return !(x >= 0 && x < 8 && y >= 0 && y < 8);
     }
 
+     /**
+     * Creates a clone of this piece, optionally placing it on a new board.
+     * @param {Array<Array<Piece|null>>} [board=this.board] The board on which to place the cloned piece.
+     * @return {Piece} A new instance of the piece with the same properties but potentially on a different board.
+     */
     clone(board){
         return new this.constructor(this.x, this.y, this.color, board);
     }

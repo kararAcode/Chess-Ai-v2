@@ -12,7 +12,7 @@ class Knight extends Piece {
      * @param {number} x The initial x-coordinate (column) on the chessboard where the knight is placed.
      * @param {number} y The initial y-coordinate (row) on the chessboard where the knight is placed.
      * @param {string} color The color of the knight ('w' for white, 'b' for black).
-     * @param {Chessboard} chessboard The chessboard instance to which this knight belongs.
+     * @param {Array<Array<Piece|null>>} board The 2D array representing the game board, where each cell may contain a Piece or null.
      */
     constructor(x, y, color, board) {
         super("knight", x, y, color, board); // Call the parent class constructor
