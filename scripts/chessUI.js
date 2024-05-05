@@ -1,12 +1,12 @@
-/**
- * ChessUI handles all user interface aspects for a chess game using p5.js. It manages drawing the chessboard,
- * pieces, and handling user interactions like mouse clicks.
- * 
- * @param {p5} p - The p5 instance, used for drawing.
- * @param {Object} images - An object containing preloaded p5 Image objects organized by color and type of chess pieces.
- * @param {ChessGame} game - The game logic handler which includes the current state of the chessboard.
- */
 class ChessUI {
+    /**
+     * Constructs a ChessUI instance which handles all user interface aspects for a chess game using p5.js.
+     * It manages drawing the chessboard, pieces, and handling user interactions like mouse clicks.
+     * 
+     * @param {p5} p - The p5 instance, used for drawing.
+     * @param {Object} images - An object containing preloaded p5 Image objects organized by color and type of chess pieces.
+     * @param {Chessboard} game - The game logic handler which includes the current state of the chessboard.
+     */
     constructor(p, images, game) {
         this.p = p;
         this.images = images;
@@ -22,26 +22,40 @@ class ChessUI {
         } else {
             this.cellHeight = this.cellWidth;
         }
+
+        this.activePiece = null;
+        this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Matrix to keep track of which cells are currently highlighted
     }
 
     /**
      * Renders the chessboard on the canvas. It draws each cell with alternating colors to create a classic
      * chessboard appearance. The board is centered on the canvas.
      */
+    display() {
+        this.p.background(255);
+        this.displayBoard();
+        this.displayPieces();
+    }
+
+    /**
+     * Renders the chessboard, drawing each cell with alternating colors to visually represent the board.
+     */
     displayBoard() {
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
-                // Alternate colors for the chessboard squares
-                this.p.fill((i + j) % 2 === 0 ? "rgb(238, 238, 210)" : "rgb(118, 150, 86)");
-                // Draw each square of the chessboard
+                this.p.noStroke();
+                if (this.tileMatrix[i][j]) {
+                    this.p.fill("lightgreen"); // Highlight the cell if it's marked in tileMatrix
+                } else {
+                    this.p.fill((i + j) % 2 === 0 ? "rgb(238, 238, 210)" : "rgb(118, 150, 86)");
+                }
                 this.p.rect(this.cellWidth * j + this.p.width / 2 - this.cellWidth * 4, this.cellHeight * i, this.cellWidth, this.cellHeight);
             }
         }
     }
 
     /**
-     * Renders all chess pieces on the board based on their current positions in the game logic.
-     * It calls displayPiece for each piece that is not null in the game board array.
+     * Renders all chess pieces on the board based on their current positions as defined in the game logic.
      */
     displayPieces() {
         for (let i = 0; i < 8; i++) {
@@ -54,12 +68,11 @@ class ChessUI {
     }
 
     /**
-     * Draws a single chess piece on the board using its image, position, and the calculated cell dimensions.
+     * Draws a single chess piece on the board using its image and position.
      * 
-     * @param {Piece} piece - The piece to be displayed
+     * @param {Piece} piece - The piece to be displayed.
      */
     displayPiece(piece) {
-        // Note: Adjust the argument order if necessary based on actual attribute names
         this.p.image(
             this.images[piece.color][piece.name], 
             this.cellWidth * piece.y + this.p.width / 2 - this.cellWidth * 4, 
@@ -67,6 +80,58 @@ class ChessUI {
             this.cellWidth, 
             this.cellHeight
         );
+    }
+
+    /**
+     * Update method to handle user interactions during gameplay, such as selecting and moving chess pieces.
+     */
+    update() {
+        if (this.p.mouseIsPressed) {
+            let { x, y } = this.getCurrentPosition();
+            if (!this.isOutside(x, y) && this.game.board[x][y] !== null) {
+                this.activePiece = this.game.board[x][y];
+                this.updateHighlight(this.activePiece);
+            } 
+        }
+    }
+
+    /**
+     * Highlights possible moves for the selected piece on the chessboard.
+     * 
+     * @param {Piece} piece - The currently active piece to highlight possible moves for.
+     */
+    updateHighlight(piece) {
+        this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Reset highlight matrix
+        for (const move of piece.getPossibleMoves()) {
+            this.tileMatrix[move.x][move.y] = true;
+        }
+    }
+
+    /**
+     * Calculates the current position of the mouse relative to the chessboard and translates it to board coordinates.
+     * 
+     * @returns {Object} An object containing the row and column indices (x, y) of the tile under the mouse.
+     */
+    getCurrentPosition() {
+        let originX = this.p.width / 2 - this.cellWidth * 4;
+        let mouseXRelativeToBoard = this.p.mouseX - originX;
+        let mouseYRelativeToBoard = this.p.mouseY;
+
+        let col = Math.floor(mouseXRelativeToBoard / this.cellWidth);
+        let row = Math.floor(mouseYRelativeToBoard / this.cellHeight);
+
+        return { x: row, y: col };
+    }
+
+    /**
+     * Determines if the given board coordinates are outside the valid range of the chessboard.
+     * 
+     * @param {number} x - The row index to check.
+     * @param {number} y - The column index to check.
+     * @returns {boolean} True if the coordinates are outside the chessboard, false otherwise.
+     */
+    isOutside(x, y) {
+        return !(x >= 0 && x < 8 && y >= 0 && y < 8);
     }
 }
 

@@ -35,10 +35,9 @@ const mainSketch = (p) => {
   }
   
   p.draw = () =>{
-    p.background(255);
 
-    chessUI.displayBoard();
-    chessUI.displayPieces();
+    chessUI.display();
+    chessUI.update();
   }
   
 }
