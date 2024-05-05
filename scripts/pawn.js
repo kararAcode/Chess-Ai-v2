@@ -29,12 +29,12 @@ class Pawn extends Piece {
         let forwardTwo = this.x + this.dir * 2;
 
         // Move one square forward if it's not occupied and within board limits
-        if (!this.isOutside(forwardOne, this.y) && this.board[forwardOne][this.y] == null ) {
+        if (!this.isOutside(forwardOne, this.y) && this.board[forwardOne][this.y] === null ) {
             moves.push({x: forwardOne, y: this.y});
         }
 
         // Move two squares forward on the first turn if it's not occupied and within board limits
-        if (!this.isOutside(forwardTwo, this.y) &&this.board[forwardTwo][this.y] == null && this.firstTurn) {
+        if (!this.isOutside(forwardTwo, this.y) && this.board[forwardTwo][this.y] === null && this.board[forwardOne][this.y] === null && this.firstTurn) {
             moves.push({x: forwardTwo, y: this.y});
         }
 
