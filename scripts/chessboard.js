@@ -12,23 +12,11 @@ import King from "./king.js";
 class Chessboard {
     /**
      * Constructs a new Chessboard instance. Initializes an 8x8 board,
-     * sets up the initial placement of pieces, and calculates cell dimensions
-     * based on provided width and height.
-     * 
-     * @param {number} width The width of the canvas where the board is displayed.
-     * @param {number} height The height of the canvas where the board is displayed.
+     * sets up the initial placement of pieces
      */
-    constructor(width, height) {
+    constructor() {
         this.board = Array(8).fill(null).map(() => Array(8).fill(null));
-        this.cellWidth = width / 8;
-        this.cellHeight = height / 8;
-
-        // Ensure that cells are always square
-        if (this.cellWidth > this.cellHeight) {
-            this.cellWidth = this.cellHeight;
-        } else {
-            this.cellHeight = this.cellWidth;
-        }
+        
         // Optionally initialize the board with pieces
         // this.setupPieces();
     }
@@ -206,19 +194,7 @@ class Chessboard {
         return !this.isKingInCheck(piece.color, simulatedBoard);
     }
 
-    /**
-     * Renders the chessboard on the canvas, drawing each cell and alternately coloring them.
-     * Adjusts cell positions based on the board's dimensions to ensure the board is centered.
-     * @param {any} p A p5.js drawing context or similar.
-     */
-    display(p) {
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                p.fill((i + j) % 2 === 0 ? "rgb(238, 238, 210)" : "rgb(118, 150, 86)");
-                p.rect(this.cellWidth * j + p.width / 2 - this.cellWidth * 4, this.cellHeight * i, this.cellWidth, this.cellHeight);
-            }
-        }
-    }
+   
 }
 
 
