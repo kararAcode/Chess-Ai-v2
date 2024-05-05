@@ -88,10 +88,16 @@ class ChessUI {
     update() {
         if (this.p.mouseIsPressed) {
             let { x, y } = this.getCurrentPosition();
-            if (!this.isOutside(x, y) && this.game.board[x][y] !== null) {
+            if (!this.isOutside(x, y) && this.game.board[x][y] !== null && this.game.board[x][y].color === this.game.turn) {
                 this.activePiece = this.game.board[x][y];
                 this.updateHighlight(this.activePiece);
             } 
+
+            if (!this.isOutside(x, y) && this.tileMatrix[x][y]) {
+                this.game.move(this.activePiece, {x, y});
+                this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Reset highlight matrix
+                this.activePiece = null;
+            }
         }
     }
 

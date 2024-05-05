@@ -16,6 +16,7 @@ class Chessboard {
      */
     constructor() {
         this.board = Array(8).fill(null).map(() => Array(8).fill(null));
+        this.turn = 'w'; // 'w' for white, 'b' for black
         
         // Optionally initialize the board with pieces
         // this.setupPieces();
@@ -93,6 +94,8 @@ class Chessboard {
         board[move.x][move.y] = piece;
         piece.x = move.x;
         piece.y = move.y;
+
+        this.turn = piece.color === 'w'? 'b' : 'w';
     }
 
     /**
