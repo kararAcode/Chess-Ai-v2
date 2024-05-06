@@ -39,12 +39,12 @@ class Pawn extends Piece {
         }
 
         // Capture diagonally left if there is an opponent piece and it's within board limits
-        if (this.isValidTarget(forwardOne, this.y - 1) && !this.isOutside(forwardOne, this.y - 1)) {
+        if (!this.isOutside(forwardOne, this.y - 1) && this.isValidTarget(forwardOne, this.y - 1)) {
             moves.push({x: forwardOne, y: this.y - 1});
         }
 
         // Capture diagonally right if there is an opponent piece and it's within board limits
-        if (this.isValidTarget(forwardOne, this.y + 1) && !this.isOutside(forwardOne, this.y + 1)) {
+        if (!this.isOutside(forwardOne, this.y + 1) && this.isValidTarget(forwardOne, this.y + 1) ) {
             moves.push({x: forwardOne, y: this.y + 1});
         }
 

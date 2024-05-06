@@ -54,26 +54,29 @@ class ChessUI {
             for (let j = 0; j < 8; j++) {
                 this.p.noStroke();
 
-                switch (this.tileMatrix[i][j]) {
-                    case TILESTATE.ACTIVE:
-                        this.p.fill("yellow");
-                        break;
-
-                    case TILESTATE.CHECK:
-                        this.p.fill("red");
-                        break;
-
-                    case TILESTATE.MOVE:
-                        this.p.fill("lightgreen"); 
-                        break;
-
-                    default:
-                        this.p.fill((i + j) % 2 === 0 ? "rgb(238, 238, 210)" : "rgb(118, 150, 86)");
-                    }
-                
+                this.fillTile(i, j);
                 this.p.rect(this.cellWidth * j + this.p.width / 2 - this.cellWidth * 4, this.cellHeight * i, this.cellWidth, this.cellHeight);
             }
         }
+    }
+
+    fillTile(x, y) {
+        switch (this.tileMatrix[x][y]) {
+            case TILESTATE.ACTIVE:
+                this.p.fill("yellow");
+                break;
+
+            case TILESTATE.CHECK:
+                this.p.fill("red");
+                break;
+
+            case TILESTATE.MOVE:
+                this.p.fill("lightgreen"); 
+                break;
+
+            default:
+                this.p.fill((x + y) % 2 === 0 ? "rgb(238, 238, 210)" : "rgb(118, 150, 86)");
+            }
     }
 
     /**
@@ -108,7 +111,9 @@ class ChessUI {
      * Update method to handle user interactions during gameplay, such as selecting and moving chess pieces.
      */
     update() {
-
+        if (this.game.isKingInCheck(this.game.turn)) {
+            this.highlightCheck(this.game.turn);
+        }
         
 
         if (this.p.mouseIsPressed) {
@@ -122,12 +127,9 @@ class ChessUI {
                 this.game.move(this.activePiece, {x, y});
                 this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Reset highlight matrix
                 this.activePiece = null;
-
-                if (this.game.isKingInCheck(this.game.turn)) {
-                    this.highlightCheck(this.game.turn);
-                }
-
             }
+
+
         }
     }
 
@@ -144,6 +146,8 @@ class ChessUI {
         for (const move of this.game.getLegalMoves(piece)) {
             this.tileMatrix[move.x][move.y] = TILESTATE.MOVE;
         }
+
+
     }
 
     resetMoveHighlights() {
