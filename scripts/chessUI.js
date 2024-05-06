@@ -1,4 +1,11 @@
 import Chessboard from "./chessboard.js";
+import Piece from "./piece.js";
+
+const TILESTATE = {
+    MOVE: 0,
+    ACTIVE: 1,
+    CHECK: 2,
+};
 
 class ChessUI {
     /**
@@ -46,11 +53,24 @@ class ChessUI {
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 this.p.noStroke();
-                if (this.tileMatrix[i][j]) {
-                    this.p.fill("lightgreen"); // Highlight the cell if it's marked in tileMatrix
-                } else {
-                    this.p.fill((i + j) % 2 === 0 ? "rgb(238, 238, 210)" : "rgb(118, 150, 86)");
-                }
+
+                switch (this.tileMatrix[i][j]) {
+                    case TILESTATE.ACTIVE:
+                        this.p.fill("yellow");
+                        break;
+
+                    case TILESTATE.CHECK:
+                        this.p.fill("red");
+                        break;
+
+                    case TILESTATE.MOVE:
+                        this.p.fill("lightgreen"); 
+                        break;
+
+                    default:
+                        this.p.fill((i + j) % 2 === 0 ? "rgb(238, 238, 210)" : "rgb(118, 150, 86)");
+                    }
+                
                 this.p.rect(this.cellWidth * j + this.p.width / 2 - this.cellWidth * 4, this.cellHeight * i, this.cellWidth, this.cellHeight);
             }
         }
@@ -88,20 +108,24 @@ class ChessUI {
      * Update method to handle user interactions during gameplay, such as selecting and moving chess pieces.
      */
     update() {
+
+        
+
         if (this.p.mouseIsPressed) {
             let { x, y } = this.getCurrentPosition();
             if (!this.isOutside(x, y) && this.game.board[x][y] !== null && this.game.board[x][y].color === this.game.turn) {
                 this.activePiece = this.game.board[x][y];
-                this.updateHighlight(this.activePiece);
+                this.highlightPieceMoves(this.activePiece);
             } 
 
-            if (!this.isOutside(x, y) && this.tileMatrix[x][y]) {
+            if (!this.isOutside(x, y) && this.tileMatrix[x][y] === TILESTATE.MOVE) {
                 this.game.move(this.activePiece, {x, y});
                 this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Reset highlight matrix
                 this.activePiece = null;
 
-                
-
+                if (this.game.isKingInCheck(this.game.turn)) {
+                    this.highlightCheck(this.game.turn);
+                }
 
             }
         }
@@ -112,15 +136,35 @@ class ChessUI {
      * 
      * @param {Piece} piece - The currently active piece to highlight possible moves for.
      */
-    updateHighlight(piece) {
-        this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Reset highlight matrix
+    highlightPieceMoves(piece) {
+        this.resetMoveHighlights();
+        
+        this.tileMatrix[piece.x][piece.y] = TILESTATE.ACTIVE;
+
         for (const move of this.game.getLegalMoves(piece)) {
-
-            this.tileMatrix[move.x][move.y] = true;
-
-
+            this.tileMatrix[move.x][move.y] = TILESTATE.MOVE;
         }
     }
+
+    resetMoveHighlights() {
+        for (let row = 0; row < this.tileMatrix.length; row++) {
+            for (let col = 0; col < this.tileMatrix[row].length; col++) {
+                if (this.tileMatrix[row][col] !== TILESTATE.CHECK) {
+                    this.tileMatrix[row][col] = false;
+                }
+            }
+        }
+    }
+
+    highlightCheck(color) {
+        let king = this.game.findKing(color);
+
+        if (king && this.activePiece !== king) {
+            this.tileMatrix[king.x][king.y] = TILESTATE.CHECK;
+        }
+    }
+
+
 
     /**
      * Calculates the current position of the mouse relative to the chessboard and translates it to board coordinates.
