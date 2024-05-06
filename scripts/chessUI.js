@@ -1,3 +1,5 @@
+import Chessboard from "./chessboard.js";
+
 class ChessUI {
     /**
      * Constructs a ChessUI instance which handles all user interface aspects for a chess game using p5.js.
@@ -97,6 +99,10 @@ class ChessUI {
                 this.game.move(this.activePiece, {x, y});
                 this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Reset highlight matrix
                 this.activePiece = null;
+
+                
+
+
             }
         }
     }
@@ -108,8 +114,11 @@ class ChessUI {
      */
     updateHighlight(piece) {
         this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Reset highlight matrix
-        for (const move of piece.getPossibleMoves()) {
+        for (const move of this.game.getLegalMoves(piece)) {
+
             this.tileMatrix[move.x][move.y] = true;
+
+
         }
     }
 

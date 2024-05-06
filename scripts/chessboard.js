@@ -95,7 +95,11 @@ class Chessboard {
         piece.x = move.x;
         piece.y = move.y;
 
-        this.turn = piece.color === 'w'? 'b' : 'w';
+        if (board === this.board) {
+            this.turn = piece.color === 'w'? 'b' : 'w';
+
+        }
+
     }
 
     /**
@@ -186,16 +190,30 @@ class Chessboard {
     }
 
     /**
-     * Checks if a move is valid, primarily ensuring it does not leave the king in check.
-     * @param {Piece} piece The piece attempting to move.
-     * @param {Object} move The intended move containing coordinates.
-     * @returns {boolean} True if the move is legal, false otherwise.
+     * Evaluates whether a proposed move for a given piece is valid. The validity of the move is determined primarily by ensuring that executing the move would not leave the player's king in check. This method simulates the move on a cloned version of the current game board to check the resulting game state without affecting the actual game board.
+     * 
+     * @param {Piece} piece The piece that is being moved. This should be a reference to the piece object from the actual game board.
+     * @param {Object} move An object containing the target coordinates for the move. It should have 'x' and 'y' properties representing the row and column indices on the board, respectively.
+     * @returns {boolean} Returns true if the move is legal (does not result in the player's king being in check); returns false otherwise.
      */
     isValidMove(piece, move) {
+        // Clone the current board to simulate the move without affecting the real game state
         let simulatedBoard = this.cloneBoard();
-        this.move(piece, move, simulatedBoard);
+
+        // Perform the move on the cloned board using the piece's current position
+        // 'piece' is from the actual board, so its equivalent on the cloned board is at the same coordinates
+        this.move(simulatedBoard[piece.x][piece.y], move, simulatedBoard);
+
+        // Check if making this move places the player's king in check
         return !this.isKingInCheck(piece.color, simulatedBoard);
     }
+
+    getLegalMoves(piece) {
+        let possibleMoves = piece.getPossibleMoves(); // From the Piece class
+        let legalMoves = possibleMoves.filter(move => this.isValidMove(piece, move));
+        return legalMoves;
+    }
+
 
    
 }
