@@ -95,10 +95,7 @@ class Chessboard {
         piece.x = move.x;
         piece.y = move.y;
 
-        if (board === this.board) {
-            this.turn = piece.color === 'w'? 'b' : 'w';
-
-        }
+        
 
     }
 
@@ -173,9 +170,6 @@ class Chessboard {
      * has no legal moves and their king is not in check. Returns false if the king is in check or if at least one legal move exists.
      */
     isStalemate(color) {
-        if (this.isKingInCheck(color)) {
-            return false;  // Not a stalemate if the king is in check
-        }
 
         let pieces = this.getPieces(color);
         for (let piece of pieces) {

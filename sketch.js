@@ -7,6 +7,11 @@
 
 import Chessboard from "./scripts/chessboard.js"; 
 import ChessUI from "./scripts/chessUI.js";
+import King from "./scripts/king.js";
+import Queen from "./scripts/queen.js";
+import Pawn from "./scripts/pawn.js";
+
+
 const mainSketch = (p) => {
   let chessUI;
   let chessboard;
@@ -29,6 +34,7 @@ const mainSketch = (p) => {
     p.createCanvas(p.windowWidth, p.windowHeight);
     chessboard = new Chessboard();
     chessboard.setupPieces();
+   
     chessUI = new ChessUI(p, images, chessboard);
   
   

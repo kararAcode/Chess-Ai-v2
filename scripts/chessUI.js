@@ -1,6 +1,6 @@
 import Chessboard from "./chessboard.js";
 import Piece from "./piece.js";
-
+import GameController from "./gamecontroller.js";
 const TILESTATE = {
     MOVE: 0,
     ACTIVE: 1,
@@ -20,6 +20,7 @@ class ChessUI {
         this.p = p;
         this.images = images;
         this.game = game;
+        this.GameController = new GameController(this.game)
 
         // Calculate cell dimensions to ensure the board fits in the canvas and cells are square.
         this.cellWidth = p.width / 8;
@@ -32,9 +33,14 @@ class ChessUI {
             this.cellHeight = this.cellWidth;
         }
 
-        this.activePiece = null;
+        this.activePiecePos = null;
         this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Matrix to keep track of which cells are currently highlighted
-    }
+
+        // this.turn = "w";
+
+        this.gameOverText = null;
+
+    }   
 
     /**
      * Renders the chessboard on the canvas. It draws each cell with alternating colors to create a classic
@@ -107,30 +113,60 @@ class ChessUI {
         );
     }
 
+
     /**
      * Update method to handle user interactions during gameplay, such as selecting and moving chess pieces.
      */
     update() {
-        if (this.game.isKingInCheck(this.game.turn)) {
-            this.highlightCheck(this.game.turn);
-        }
+
         
 
-        if (this.p.mouseIsPressed) {
-            let { x, y } = this.getCurrentPosition();
-            if (!this.isOutside(x, y) && this.game.board[x][y] !== null && this.game.board[x][y].color === this.game.turn) {
-                this.activePiece = this.game.board[x][y];
-                this.highlightPieceMoves(this.activePiece);
-            } 
+        let pos = this.getCurrentPosition();
+  
+        if (this.p.mouseIsPressed && !this.isOutside(pos.x, pos.y)) {
 
-            if (!this.isOutside(x, y) && this.tileMatrix[x][y] === TILESTATE.MOVE) {
-                this.game.move(this.activePiece, {x, y});
+            this.GameController.onCheck((kingPos) => {
+
+                this.highlightCheck(kingPos);
+    
+            });
+
+            this.GameController.onPieceSelected(pos, (moves) => {
+                this.activePiecePos = pos;
+                this.highlightPieceMoves(this.activePiecePos, moves);
+            });
+
+            
+            if (this.tileMatrix[pos.x][pos.y] === TILESTATE.MOVE) {
+
+                this.GameController.handleMove(this.activePiecePos, pos)
+
                 this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Reset highlight matrix
-                this.activePiece = null;
+
+                this.GameController.onCheckmate((winner) => {
+                    this.gameOverText = `Game Over! ${winner} wins!`;
+                    this.state = "gameOver";
+                });
+
+                this.GameController.onStalemate(() => {
+                    this.gameOverText = "Stalemate";
+                    this.state = "gameOver";
+                });
+
+                
+                this.activePiecePos = null;
+
+                
+
+
             }
 
 
         }
+    }
+
+    isActive(pos) {
+        return this.activePiecePos === pos;
     }
 
     /**
@@ -138,12 +174,12 @@ class ChessUI {
      * 
      * @param {Piece} piece - The currently active piece to highlight possible moves for.
      */
-    highlightPieceMoves(piece) {
+    highlightPieceMoves(activePiecePos, moves) {
         this.resetMoveHighlights();
         
-        this.tileMatrix[piece.x][piece.y] = TILESTATE.ACTIVE;
+        this.tileMatrix[activePiecePos.x][activePiecePos.y] = TILESTATE.ACTIVE;
 
-        for (const move of this.game.getLegalMoves(piece)) {
+        for (const move of moves) {
             this.tileMatrix[move.x][move.y] = TILESTATE.MOVE;
         }
 
@@ -160,12 +196,10 @@ class ChessUI {
         }
     }
 
-    highlightCheck(color) {
-        let king = this.game.findKing(color);
-
-        if (king && this.activePiece !== king) {
-            this.tileMatrix[king.x][king.y] = TILESTATE.CHECK;
-        }
+    highlightCheck(pos) {
+        
+        this.tileMatrix[pos.x][pos.y] = TILESTATE.CHECK;
+        
     }
 
 
