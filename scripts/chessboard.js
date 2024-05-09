@@ -26,6 +26,8 @@ class Chessboard {
      * Initializes the pieces on the board to their standard starting positions.
      */
     setupPieces() {
+
+
         const mainForces = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook];
         for (let i = 0; i < 8; i++) {
             this.board[0][i] = new mainForces[i](0, i, 'b', this.board);
@@ -129,12 +131,11 @@ class Chessboard {
      * @param {string} color The color of the player making the move, used to determine the opponent.
      * @returns {boolean} True if the opponent is checkmated, otherwise false.
      */
-    isOpponentCheckmated(color) {
+    isCheckmated(color) {
 
         let simulatedBoard = this.cloneBoard();
-        let opponentColor = color === "w" ? "b" : "w";
 
-        let pieces = this.getPieces(opponentColor, simulatedBoard);
+        let pieces = this.getPieces(color, simulatedBoard);
         for (let piece of pieces) {
             let piecesMoves = piece.getPossibleMoves();
             let oldX = piece.x;
@@ -146,7 +147,7 @@ class Chessboard {
 
 
                 
-                if (!this.isKingInCheck(opponentColor, simulatedBoard)) {
+                if (!this.isKingInCheck(color, simulatedBoard)) {
                     return false;
                 }
 
@@ -170,6 +171,9 @@ class Chessboard {
      * has no legal moves and their king is not in check. Returns false if the king is in check or if at least one legal move exists.
      */
     isStalemate(color) {
+        if (this.isKingInCheck(color)) {
+            return false;
+        }
 
         let pieces = this.getPieces(color);
         for (let piece of pieces) {
