@@ -266,7 +266,7 @@ describe('Chessboard', () => {
     });
 
 
-    describe('isOpponentCheckmated', () => {
+    describe('isCheckmated', () => {
         let chessboard;
         beforeEach(() => {
             chessboard = new Chessboard(800, 800);
@@ -283,7 +283,7 @@ describe('Chessboard', () => {
             // You can add more pieces if needed to block any other potential escape routes
             // Ensure no other black piece can block the check or capture the threatening queen
         
-            expect(chessboard.isOpponentCheckmated('w')).toBeTruthy(); // Expecting true, as white should have checkmated black
+            expect(chessboard.isCheckmated('b')).toBeTruthy(); // Expecting true, as white should have checkmated black
         });
         
         
@@ -291,8 +291,8 @@ describe('Chessboard', () => {
         
         test('returns false when it is not checkmate', () => {
             chessboard.setupPieces(); // Standard setup is not a checkmate
-            expect(chessboard.isOpponentCheckmated('b')).toBeFalsy();
-            expect(chessboard.isOpponentCheckmated('w')).toBeFalsy();
+            expect(chessboard.isCheckmated('w')).toBeFalsy();
+            expect(chessboard.isCheckmated('b')).toBeFalsy();
         });
     });
 
