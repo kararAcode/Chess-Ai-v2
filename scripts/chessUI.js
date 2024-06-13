@@ -36,9 +36,9 @@ class ChessUI {
         this.activePiecePos = null;
         this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Matrix to keep track of which cells are currently highlighted
 
-        // this.turn = "w";
 
         this.gameOverText = null;
+        this.state = 'play';
 
     }   
 
@@ -48,8 +48,24 @@ class ChessUI {
      */
     display() {
         this.p.background(255);
-        this.displayBoard();
-        this.displayPieces();
+
+        if (this.state === 'play') {
+            this.displayBoard();
+            this.displayPieces();
+        }
+
+        if (this.state === 'gameover') {
+            this.displayGameOver();
+        }
+
+        
+    }
+
+    displayGameOver() {
+        this.p.fill("rgb(118, 150, 86)");
+        this.p.textAlign(this.p.CENTER, this.p.CENTER);
+        this.p.textSize(this.p.width / 10);
+        this.p.text(this.gameOverText, this.p.width / 2, this.p.height / 2);
     }
 
     /**
@@ -119,51 +135,61 @@ class ChessUI {
      */
     update() {
 
-        
-
         let pos = this.getCurrentPosition();
   
         if (this.p.mouseIsPressed && !this.isOutside(pos.x, pos.y)) {
+            this.handleCheckState();
+            this.handlePieceSelected(pos);
 
-            this.GameController.onCheck((kingPos) => {
-
-                this.highlightCheck(kingPos);
-    
-            });
-
-            this.GameController.onPieceSelected(pos, (moves) => {
-                this.activePiecePos = pos;
-                this.highlightPieceMoves(this.activePiecePos, moves);
-            });
-
-            
             if (this.tileMatrix[pos.x][pos.y] === TILESTATE.MOVE) {
 
                 this.GameController.handleMove(this.activePiecePos, pos)
 
                 this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Reset highlight matrix
 
-                this.GameController.onCheckmate((winner) => {
-                    this.gameOverText = `Game Over! ${winner} wins!`;
-                    this.state = "gameOver";
-                });
-
-                this.GameController.onStalemate(() => {
-                    this.gameOverText = "Stalemate";
-                    this.state = "gameOver";
-                });
-
+                this.handleGameOverStates();
                 
                 this.activePiecePos = null;
-
-                
-
-
+             
             }
-
-
         }
     }
+
+
+
+
+
+    setGameOverState(msg) {
+        setTimeout(() => {
+            this.gameOverText = msg;
+            this.state = "gameover";
+        });
+    }
+
+    handleGameOverStates() {
+        this.GameController.onCheckmate((winner) => {
+            this.setGameOverState(`Game Over! ${winner} wins!`);
+        });
+
+        this.GameController.onStalemate(() => {
+            this.setGameOverState("Stalemate");
+        });
+    }
+
+    handlePieceSelected(pos) {
+        this.GameController.onPieceSelected(pos, (moves) => {
+            this.activePiecePos = pos;
+            this.highlightPieceMoves(this.activePiecePos, moves);
+        });
+    }
+
+    handleCheckState() {
+        this.GameController.onCheck((kingPos) => {
+            this.highlightCheck(kingPos);
+        });
+    }
+
+    
 
     isActive(pos) {
         return this.activePiecePos === pos;

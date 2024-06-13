@@ -41,7 +41,7 @@ class GameController {
     }
 
     onCheckmate(callback) {
-        if (this.game.isOpponentCheckmated(this.turn)) {
+        if (this.game.isCheckmated(this.turn)) {
             callback(this.turn === 'w'? 'White' : 'Black');
         }
     }
