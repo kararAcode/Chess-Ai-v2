@@ -15,11 +15,7 @@ class Chessboard {
      * sets up the initial placement of pieces
      */
     constructor() {
-        this.board = Array(8).fill(null).map(() => Array(8).fill(null));
-        this.turn = 'w'; // 'w' for white, 'b' for black
-        
-        // Optionally initialize the board with pieces
-        // this.setupPieces();
+        this.board = Array(8).fill(null).map(() => Array(8).fill(null));        
     }
 
     /**
@@ -206,6 +202,11 @@ class Chessboard {
         return !this.isKingInCheck(piece.color, simulatedBoard);
     }
 
+    /**
+     * Gets all legal moves for a given piece on the board. This method uses the isValidMove() method to determine if a proposed move is valid.
+     * @param {Piece} piece The piece for which to get legal moves.
+     * @returns {Array<Object>} An array of objects representing the legal moves for the given piece. Each object contains the 'x' and 'y' properties representing the target coordinates for the move.
+     */
     getLegalMoves(piece) {
         let possibleMoves = piece.getPossibleMoves(); // From the Piece class
         let legalMoves = possibleMoves.filter(move => this.isValidMove(piece, move));

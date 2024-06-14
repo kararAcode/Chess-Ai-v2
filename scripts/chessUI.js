@@ -16,29 +16,23 @@ class ChessUI {
      * @param {Object} images - An object containing preloaded p5 Image objects organized by color and type of chess pieces.
      * @param {Chessboard} game - The game logic handler which includes the current state of the chessboard.
      */
-    constructor(p, images, game) {
+    constructor(p, images, game, stateManager) {
         this.p = p;
         this.images = images;
         this.game = game;
-        this.GameController = new GameController(this.game)
+        this.GameController = new GameController(this.game);
+        this.stateManager = stateManager;
 
         // Calculate cell dimensions to ensure the board fits in the canvas and cells are square.
-        this.cellWidth = p.width / 8;
-        this.cellHeight = p.height / 8;
-
-        // Adjust cell dimensions to maintain aspect ratio as square.
-        if (this.cellWidth > this.cellHeight) {
-            this.cellWidth = this.cellHeight;
-        } else {
-            this.cellHeight = this.cellWidth;
-        }
+        this.cellWidth = this.cellHeight = Math.min(p.width / 8, p.height / 8);
 
         this.activePiecePos = null;
         this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false)); // Matrix to keep track of which cells are currently highlighted
 
-
-        this.gameOverText = null;
-        this.state = 'play';
+        this.stateManager.on('play', ({ gamemode }) => {
+            this.GameController.initialize(gamemode);
+            this.tileMatrix = Array(8).fill(false).map(() => Array(8).fill(false));        
+        })
 
     }   
 
@@ -49,25 +43,12 @@ class ChessUI {
     display() {
         this.p.background(255);
 
-        if (this.state === 'play') {
-            this.displayBoard();
-            this.displayPieces();
-        }
-
-        if (this.state === 'gameover') {
-            this.displayGameOver();
-        }
-
-        
+        this.displayBoard();
+        this.displayPieces();
+    
     }
 
-    displayGameOver() {
-        this.p.fill("rgb(118, 150, 86)");
-        this.p.textAlign(this.p.CENTER, this.p.CENTER);
-        this.p.textSize(this.p.width / 10);
-        this.p.text(this.gameOverText, this.p.width / 2, this.p.height / 2);
-    }
-
+   
     /**
      * Renders the chessboard, drawing each cell with alternating colors to visually represent the board.
      */
@@ -156,21 +137,17 @@ class ChessUI {
     }
 
 
-
-
-
     setGameOverState(msg) {
         setTimeout(() => {
-            this.gameOverText = msg;
-            this.state = "gameover";
-        });
+            this.stateManager.setState("gameover", {gameOverText: msg});
+        }, 2000);
     }
 
     handleGameOverStates() {
         this.GameController.onCheckmate((winner) => {
             this.setGameOverState(`Game Over! ${winner} wins!`);
         });
-
+        
         this.GameController.onStalemate(() => {
             this.setGameOverState("Stalemate");
         });

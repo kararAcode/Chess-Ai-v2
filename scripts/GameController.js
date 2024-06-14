@@ -1,8 +1,23 @@
+
 class GameController {
+    
     constructor(game) {
         this.game = game;
         this.turn = 'w'; // 'w' for white, 'b' for black
         this.activePiece = null;
+        this.gameMode; 
+        this.gameOver = false;
+    }
+
+
+
+    
+    initialize(mode) {
+        this.game.setupPieces();
+        this.turn = 'w'; // 'w' for white, 'b' for black
+        this.activePiece = null;
+        this.gameMode = mode;
+        this.gameOver = false;
     }
 
     onCheck(callback) {
@@ -36,13 +51,15 @@ class GameController {
 
     onStalemate(callback) {
         if (this.game.isStalemate(this.turn)) {
+            this,gameOver = true;
             callback();
         }
     }
 
     onCheckmate(callback) {
         if (this.game.isCheckmated(this.turn)) {
-            callback(this.turn === 'w'? 'White' : 'Black');
+            this.gameOver= true;
+            callback(this.turn === 'w'? 'Black' : 'White');
         }
     }
 }

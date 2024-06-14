@@ -7,15 +7,19 @@
 
 import Chessboard from "./scripts/chessboard.js"; 
 import ChessUI from "./scripts/chessUI.js";
-import King from "./scripts/king.js";
-import Queen from "./scripts/queen.js";
-import Pawn from "./scripts/pawn.js";
+import StateManager from "./scripts/stateManager.js";
+import MainMenuUI from "./scripts/mainmenuUI.js";
+import GameOverUI from "./scripts/gameOverUI.js";
 
 
 const mainSketch = (p) => {
   let chessUI;
+  let mainMenuUI;
+  let gameOverUI;
   let chessboard;
   let images = {};
+  let stateManager;
+
 
   p.preload = () =>{
     const pieceNames = ["king", "queen", "bishop", "knight", "rook", "pawn"];
@@ -32,18 +36,37 @@ const mainSketch = (p) => {
 
   p.setup = () =>{
     p.createCanvas(p.windowWidth, p.windowHeight);
+
     chessboard = new Chessboard();
     chessboard.setupPieces();
+    stateManager = new StateManager("mainmenu");
    
-    chessUI = new ChessUI(p, images, chessboard);
-  
+
+    mainMenuUI = new MainMenuUI(p, stateManager);
+    chessUI = new ChessUI(p, images, chessboard, stateManager);
+    gameOverUI = new GameOverUI(p, stateManager);
   
   }
   
   p.draw = () =>{
 
-    chessUI.display();
-    chessUI.update();
+    let state = stateManager.getState();
+
+    if (state === "mainmenu") {
+      mainMenuUI.display();
+      mainMenuUI.update();
+    }
+
+    else if  (state === "play") {
+      chessUI.display();
+      chessUI.update();
+    }
+
+    else if (state === "gameover") {
+      gameOverUI.display();
+      gameOverUI.update();
+    }
+    
   }
   
 }
