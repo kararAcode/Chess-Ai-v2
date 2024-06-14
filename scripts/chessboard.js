@@ -122,10 +122,10 @@ class Chessboard {
     }
 
     /**
-     * Checks if the opponent is in checkmate, meaning the opponent's king is in check and no legal moves can remove the king from check.
+     * Checks if the given player is in checkmate, meaning their king is in check and no legal moves can remove the king from check.
      *
-     * @param {string} color The color of the player making the move, used to determine the opponent.
-     * @returns {boolean} True if the opponent is checkmated, otherwise false.
+     * @param {string} color The color of the player being detected for a checkmate
+     * @returns {boolean} True if player is checkmated, otherwise false.
      */
     isCheckmated(color) {
 
