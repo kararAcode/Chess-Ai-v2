@@ -1,4 +1,4 @@
-import Chessboard from "./chessboard";
+import Chessboard from "./chessboard.js";
 class GameController {
     /**
      * Constructs a new GameController instance.
@@ -62,6 +62,16 @@ class GameController {
         let piece = this.game.board[piecePos.x][piecePos.y];
         this.game.move(piece, move);
         this.turn = this.turn === 'w' ? 'b' : 'w';
+
+        if (this.gameMode === 'ai') {
+
+            setTimeout(() => {
+                let {piece, move} = this.game.generateAIMove(this.game.board, 3, false); 
+                this.game.move(piece, move);
+                this.turn = this.turn === 'w'? 'b' : 'w';
+            }, 1000)
+
+        }
     }
 
     /**
@@ -72,7 +82,7 @@ class GameController {
      * @param {Function} callback - The callback function to execute with the piece's legal moves.
      */
     onPieceSelected(piecePos, callback) {
-        if (this.gameOver) return; // Prevent selection if the game is over
+        if (this.gameOver || (this.gameMode === 'ai' && this.turn === "b")) return; // Prevent selection if the game is over or if it's the AI's turn
 
         let piece = this.game.board[piecePos.x][piecePos.y];
         if (piece !== null && piece.color === this.turn) {
@@ -102,5 +112,7 @@ class GameController {
         }
     }
 }
+
+
 
 export default GameController;

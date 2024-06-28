@@ -16,6 +16,7 @@ class Chessboard {
      */
     constructor() {
         this.board = Array(8).fill(null).map(() => Array(8).fill(null));        
+        
     }
 
     /**
@@ -213,8 +214,200 @@ class Chessboard {
         return legalMoves;
     }
 
+     
+    /**
+     * Generates the optimal move for the AI player.
+     * @param {Array<Array<Piece|null>>} board The board on which to generate the optimal move.
+     * @param {number} depth The maximum depth of the search tree to explore.
+     * @param {boolean} maximizingPlayer False if the AI player is trying to maximize its evaluation
+     * @returns {Object} - An object containing:
+     * @returns {Piece} piece - Reference to the piece to move.
+     * @returns {Object} move - An object containing the 'x' and 'y' properties representing the target
 
-   
+     */
+    generateAIMove(board, depth, maximizingPlayer) {
+        let color = maximizingPlayer ? "w": "b";
+        let bestMove;
+        let bestEval = -Infinity;
+
+        let possibileBoards = this.generatePossibleBoards(board, color);
+
+        for (let state of possibileBoards) {
+
+            let {board: possibleBoard, piece, move} = state;
+
+            
+            let evaluation = this.minimax(possibleBoard, depth - 1, false);
+
+            if (evaluation >= bestEval) {
+                bestMove = {piece, move};
+                bestEval = evaluation;
+            }
+
+            
+
+        }
+
+        return bestMove;
+    }    
+
+
+    evaluateBoard(board) {
+        const pieceSquareTables = {
+            pawn: [
+                [ 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
+                [ 5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0],
+                [ 1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0],
+                [ 0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5],
+                [ 0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0],
+                [ 0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5],
+                [ 0.5,  1.0,  1.0, -2.0, -2.0,  1.0,  1.0,  0.5],
+                [ 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0]
+            ],
+            knight: [
+                [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+                [-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0],
+                [-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0],
+                [-3.0,  1.0,  2.5,  3.0,  3.0,  2.5,  1.0, -3.0],
+                [-3.0,  1.0,  2.5,  3.0,  3.0,  2.5,  1.0, -3.0],
+                [-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0],
+                [-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0],
+                [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0]
+            ],
+            bishop: [
+                [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+                [-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+                [-1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0],
+                [-1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0],
+                [-1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0],
+                [-1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0],
+                [-1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0],
+                [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0]
+            ],
+            rook: [
+                [ 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
+                [ 0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5],
+                [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+                [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+                [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+                [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+                [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+                [ 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0]
+            ],
+            queen: [
+                [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+                [-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+                [-1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+                [-0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+                [ 0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+                [-1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+                [-1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0],
+                [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0]
+            ],
+            king: [
+                [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+                [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+                [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+                [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+                [-2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
+                [-1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
+                [ 2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0],
+                [ 2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0]
+            ]
+        };
+
+        const pieceEval = {
+            pawn: 10,
+            knight: 30,
+            bishop: 30,
+            rook: 50,
+            queen: 90,
+            king: 900
+        }
+
+        
+
+        let evaluation = 0;
+
+        let whitePieces = this.getPieces("w", board);
+        let blackPieces = this.getPieces("b", board);
+
+        for (const piece of whitePieces) {
+            evaluation += pieceEval[piece.name] + pieceSquareTables[piece.name][piece.x][piece.y];
+        }
+
+        for (const piece of blackPieces) {
+            evaluation -= (pieceEval[piece.name] + pieceSquareTables[piece.name].slice().reverse()[piece.x][piece.y]);
+        }
+
+        return evaluation;
+    }
+
+    generatePossibleBoards(board, color) {
+        const pieces = this.getPieces(color); 
+        let boards = []
+
+        for (const piece of pieces) {
+            let moves = this.getLegalMoves(piece);
+            for (const move of moves) {
+                let newBoard = this.cloneBoard(board);
+                this.move(newBoard[piece.x][piece.y], move, newBoard);
+                boards.push({board: newBoard, piece, move});
+
+            }
+        }
+
+        return boards;
+        
+    }
+
+        
+
+    /**
+     * Implements the minimax algorithm with alpha-beta pruning.
+     * @param {Array<Array<Piece|null>>} board The current state of the board.
+     * @param {number} depth The maximum depth of the search tree to explore.
+     * @param {boolean} maximizingPlayer True if the AI player is trying to maximize its evaluation.
+     * @param {number} alpha The best value that the maximizing player can guarantee.
+     * @param {number} beta The best value that the minimizing player can guarantee.
+     * @returns {number} The evaluation value of the board.
+     */
+    minimax(board, depth, maximizingPlayer, alpha = -Infinity, beta = Infinity) {
+        if (depth === 0) {
+            return this.evaluateBoard(board);
+        }
+
+        let color = maximizingPlayer ? "w" : "b";
+
+        if (maximizingPlayer) {
+            let maxEval = -Infinity;
+            for (let state of this.generatePossibleBoards(board, color)) {
+                let { board: possibleBoard } = state;
+                let evaluation = this.minimax(possibleBoard, depth - 1, false, alpha, beta);
+                maxEval = Math.max(maxEval, evaluation);
+                alpha = Math.max(alpha, evaluation);
+                if (beta <= alpha) {
+                    break; // Beta cut-off
+                }
+            }
+            return maxEval;
+        } else {
+            let minEval = Infinity;
+            for (let state of this.generatePossibleBoards(board, color)) {
+                let { board: possibleBoard } = state;
+                let evaluation = this.minimax(possibleBoard, depth - 1, true, alpha, beta);
+                minEval = Math.min(minEval, evaluation);
+                beta = Math.min(beta, evaluation);
+                if (beta <= alpha) {
+                    break; // Alpha cut-off
+                }
+            }
+            return minEval;
+        }
+    }
+
+
+
 }
 
 

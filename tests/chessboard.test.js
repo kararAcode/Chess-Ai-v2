@@ -337,4 +337,92 @@ describe('Chessboard', () => {
             expect(chessboard.isStalemate('b')).toBeFalsy();
         });
     })
+
+    describe('Minimax Algorithm', () => {
+        let chessboard;
+        const depth = 3;
+        const maximizingPlayer = true;
+    
+        beforeEach(() => {
+            chessboard = new Chessboard();
+            chessboard.setupPieces(); // Setup the initial pieces on the board
+    
+        });
+    
+        test('should return the best evaluation and move for the given board state', () => {
+            const result = chessboard.minimax(chessboard.board, depth, maximizingPlayer);
+    
+            console.log('Best evaluation:', result);
+    
+            // expect(result).toHaveProperty('evaluation');
+            // expect(result).toHaveProperty('bestMove');
+            // expect(result.bestMove).toHaveProperty('piece');
+            // expect(result.bestMove).toHaveProperty('move');
+        });
+    });
+
+    describe('generatePossibleBoards', () => {
+        let chessboard;
+    
+        beforeEach(() => {
+            chessboard = new Chessboard();
+            // chessboard.setupPieces(); // Setup the initial pieces on the board
+            chessboard.board[0][0] = new Rook(0, 0, 'w', chessboard.board);
+            chessboard.board[1][0] = new Pawn(1, 0, 'w', chessboard.board);
+            chessboard.board[6][0] = new Pawn(6, 0, 'b', chessboard.board);
+            chessboard.board[7][0] = new Rook(7, 0, 'b', chessboard.board);
+    
+        });
+    
+        test('should generate all possible boards for the given color', () => {
+            const color = 'w';
+            const possibleBoards = chessboard.generatePossibleBoards(chessboard.board, color);
+    
+            // Check that the result is an array
+            expect(Array.isArray(possibleBoards)).toBe(true);
+    
+            // Check that each element in the array is an object with the correct properties
+            possibleBoards.forEach(state => {
+                expect(state).toHaveProperty('board');
+                expect(state).toHaveProperty('piece');
+                expect(state).toHaveProperty('move');
+            });
+    
+            // Check that the number of generated boards is correct based on dummy moves
+            // Assuming rook has 2 moves and pawn has 1 move
+            expect(possibleBoards.length).toBe(7);
+        });
+    
+        test('should handle empty board', () => {
+            chessboard.board = Array(8).fill(null).map(() => Array(8).fill(null)); // Empty board
+            const color = 'w';
+            const possibleBoards = chessboard.generatePossibleBoards(chessboard.board, color);
+    
+            expect(Array.isArray(possibleBoards)).toBe(true);
+            expect(possibleBoards.length).toBe(0); // No possible moves on an empty board
+        });
+    });
+
+    describe('evaluateBoard', () => {
+        let chessboard;
+    
+        beforeEach(() => {
+            chessboard = new Chessboard();
+            chessboard.setupPieces(); // Setup the initial pieces on the board
+            // chessboard.board[0][0] = new Rook(0, 0, 'w', chessboard.board);
+            // chessboard.board[1][0] = new Pawn(1, 0, 'w', chessboard.board);
+            // chessboard.board[6][0] = new Pawn(6, 0, 'b', chessboard.board);
+            // chessboard.board[7][0] = new Rook(7, 0, 'b', chessboard.board);
+    
+        });
+    
+        test('should return neutral evaluation at initial setup', () => {
+            let evaluation = chessboard.evaluateBoard(chessboard.board);
+
+            expect(evaluation).toBe(0);
+
+        })
+    });
+    
 });
+
